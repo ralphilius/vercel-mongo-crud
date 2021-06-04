@@ -1,4 +1,5 @@
 import { VercelRequest, VercelResponse, VercelRequestBody } from '@vercel/node';
+import { Collection } from 'mongodb'
 import db from '../../_lib/mongodb';
 
 export default async (req: VercelRequest, res: VercelResponse) => {
@@ -7,13 +8,17 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   //const database: Db = await db();
 
   db().then(async (database) => {
-    const collection = await database.collection(collectionName as string);
+    const collection: Collection = database.collection(collectionName as string);
     switch (req.method) {
       case "GET":
-        return res.status(200).json({ data: await collection.find({}).toArray() });
+        return collection.find({}).toArray()
+          .then(values => res.status(200).json(values))
+          .catch(error => res.end(500));
       case "POST":
         const { document }: { document: VercelRequestBody } = req.body;
-        return res.status(200).json({ data: await collection.insertOne(document) });
+        return collection.insertOne(document)
+          .then(value => res.status(200).json(value))
+          .catch(error => res.end(500));
       default:
         return res.status(400).json({message: 'HTTP Method not supported'});
     }
