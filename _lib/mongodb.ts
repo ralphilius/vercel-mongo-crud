@@ -7,7 +7,7 @@ async function connectToDatabase(uri: string): Promise<Db> {
     return cachedDb
   }
 
-  const client: MongoClient = await MongoClient.connect(uri, { useNewUrlParser: true })
+  const client: MongoClient = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true  })
   const db: Db = await client.db(url.parse(uri).pathname.substr(1))
   cachedDb = db
   return db
