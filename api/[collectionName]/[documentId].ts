@@ -21,7 +21,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
           .catch(error => res.end(500));
       case 'DELETE':
         return collection.deleteOne({_id: docId})
-          .then(value => res.status(200).json({data: value}))
+          .then(value => res.status(200).json(value))
           .catch(error => res.end(500));
       default:
         return res.status(400).json({ message: 'HTTP Method not supported' });
