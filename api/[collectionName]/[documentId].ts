@@ -12,17 +12,26 @@ export default async (req: VercelRequest, res: VercelResponse) => {
       case "GET":
         return collection.findOne({_id: docId})
           .then(val => res.status(200).json(val))
-          .catch(error => res.status(500).end());
+          .catch(error => {
+            console.log(error)
+            res.status(500).end()
+          });
       case "PUT":
         const { document }: { document: VercelRequestBody } = req.body;
         return collection.findOne({_id: docId})
           .then(doc => doc.updateOne({$set: document}))
           .then(value => res.status(200).json(value))
-          .catch(error => res.status(500).end());
+          .catch(error => {
+            console.log(error)
+            res.status(500).end()
+          });
       case 'DELETE':
         return collection.deleteOne({_id: docId})
           .then(value => res.status(200).json(value))
-          .catch(error => res.status(500).end());
+          .catch(error => {
+            console.log(error)
+            res.status(500).end()
+          });
       default:
         return res.status(400).json({ message: 'HTTP Method not supported' });
     }
