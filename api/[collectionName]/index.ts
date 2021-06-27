@@ -29,7 +29,9 @@ export default async (req: VercelRequest, res: VercelResponse) => {
           });
       case "POST":
         const { document }: { document: VercelRequestBody } = req.body;
-        return collection.insertOne(document)
+        const id = document['_id'];
+        delete document['_id'];
+        return collection.updateOne({ _id: id }, { $set: document }, { upsert: true })
           .then(value => res.status(200).json(value))
           .catch(error => {
             console.log(error)
