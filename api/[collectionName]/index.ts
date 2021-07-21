@@ -1,5 +1,5 @@
 import { VercelRequest, VercelResponse, VercelRequestBody } from '@vercel/node';
-import { Collection } from 'mongodb'
+import { Collection, ObjectID } from 'mongodb'
 import db from '../../_lib/mongodb';
 import { isValidJson } from '../../_lib/utils';
 
@@ -29,8 +29,12 @@ export default async (req: VercelRequest, res: VercelResponse) => {
           });
       case "POST":
         const { document }: { document: VercelRequestBody } = req.body;
-        const id = document['_id'];
-        delete document['_id'];
+        let id = new ObjectID(); 
+        if(document['_id']){
+          id = document['_id'];
+          delete document['_id'];
+        }
+        
         return collection.updateOne({ _id: id }, { $set: document }, { upsert: true })
           .then(value => res.status(200).json(value))
           .catch(error => {
