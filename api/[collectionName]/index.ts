@@ -28,7 +28,8 @@ export default async (req: VercelRequest, res: VercelResponse) => {
             res.status(500).end()
           });
       case "POST":
-        const { document }: { document: VercelRequestBody } = req.body;
+        let { document }: { document: VercelRequestBody } = req.body;
+        if(!document) document = req.body;
         let id = new ObjectID(); 
         if(document['_id']){
           id = document['_id'];
